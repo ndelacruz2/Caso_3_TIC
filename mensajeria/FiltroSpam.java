@@ -19,6 +19,7 @@ public class FiltroSpam extends Thread {
     @Override
     public void run() {
         boolean activo = true;
+        System.out.println("FiltroSpam iniciado.");
 
         while (activo) {
             Mensaje m = buzonEntrada.retirar();
@@ -26,8 +27,8 @@ public class FiltroSpam extends Thread {
             if (m.getTipo() == TipoMensaje.FIN) {
                 buzonEntrega.depositar(new Mensaje("FIN_ENTREGA", TipoMensaje.FIN, "Fin de entrega", false));
                 buzonCuarentena.depositar(new Mensaje("FIN_CUARENTENA", TipoMensaje.FIN, "Fin de cuarentena", false));
-                System.out.println("FiltroSpam: fin detectado, terminando...");
-                activo = false; // cambia la condición del bucle
+                System.out.println("FiltroSpam: mensaje FIN recibido. Cerrando filtro.\n");
+                activo = false;
             } 
             else if (m.getTipo() == TipoMensaje.NORMAL) {
                 if (m.isSpam()) {
@@ -42,5 +43,4 @@ public class FiltroSpam extends Thread {
             }
         }
     }
-
 }

@@ -3,7 +3,7 @@ package mensajeria;
 public class BuzonEntrega extends Buzon {
 
     public BuzonEntrega(int capacidad) {
-        super(capacidad); //la capacidad es limitada
+        super(capacidad);
     }
 
     @Override
@@ -16,6 +16,7 @@ public class BuzonEntrega extends Buzon {
             }
         }
         cola.add(mensaje);
+        System.out.println("[Buzón Entrega] Nuevo mensaje agregado: " + mensaje);
         notifyAll();
     }
 
@@ -33,3 +34,4 @@ public class BuzonEntrega extends Buzon {
         return m;
     }
 }
+

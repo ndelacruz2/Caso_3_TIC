@@ -16,7 +16,11 @@ public class ManejadorCuarentena extends Thread {
 
     @Override
     public void run() {
-        while (true) {
+        System.out.println("ManejadorCuarentena iniciado.");
+
+        boolean activo = true;
+
+        while (activo) {
             synchronized (buzonCuarentena) {
                 Iterator<Mensaje> it = buzonCuarentena.cola.iterator();
 
@@ -25,11 +29,11 @@ public class ManejadorCuarentena extends Thread {
 
                     if (m.getTipo() == TipoMensaje.FIN) {
                         buzonEntrega.depositar(m);
-                        System.out.println("ManejadorCuarentena: fin recibido, terminando...");
-                        return; // detener hilo
+                        System.out.println("ManejadorCuarentena: mensaje FIN recibido. Terminando.\n");
+                        activo = false;
+                        return;
                     }
 
-                    // Reducir tiempo
                     m.setTiempoCuarentena(m.getTiempoCuarentena() - 1);
 
                     if (m.getTiempoCuarentena() <= 0) {
@@ -38,7 +42,7 @@ public class ManejadorCuarentena extends Thread {
                             System.out.println("ManejadorCuarentena: mensaje eliminado (malicioso) -> " + m);
                         } else {
                             buzonEntrega.depositar(m);
-                            System.out.println("ManejadorCuarentena: mensaje liberado a entrega -> " + m);
+                            System.out.println("ManejadorCuarentena: mensaje liberado -> " + m);
                         }
                         it.remove();
                     }
@@ -46,7 +50,7 @@ public class ManejadorCuarentena extends Thread {
             }
 
             try {
-                Thread.sleep(1000); // espera 1 segundo entre ciclos
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
